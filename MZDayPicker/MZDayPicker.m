@@ -476,11 +476,22 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
             if (distance < self.dayCellSize.width && distance > -self.dayCellSize.width) {
                 
                 cell.dayLabel.font = [cell.dayLabel.font fontWithSize:self.dayLabelFontSize + self.dayLabelZoomScale * zoomStep];
+                cell.dayLabel.textColor = self.selectedDayColor;
+                cell.dayNameLabel.textColor = self.selectedDayNameColor;
                 [cell setBottomBorderSlideHeight:zoomStep];
                 
             } else {
                 cell.dayLabel.font = [cell.dayLabel.font fontWithSize:self.dayLabelFontSize];
                 [cell setBottomBorderSlideHeight:0.0];
+                NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+                if (NSRangeContainsRow(self.activeDays, indexPath.row - kDefaultInitialInactiveDays + 1)) {
+                    cell.dayLabel.textColor = self.activeDayColor;
+                    cell.dayNameLabel.textColor = self.activeDayNameColor;
+                    
+                } else {
+                    cell.dayLabel.textColor = self.inactiveDayColor;
+                    cell.dayNameLabel.textColor = self.inactiveDayColor;
+                }
             }
             
             // Shadow around cell
