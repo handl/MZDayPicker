@@ -54,6 +54,9 @@ NSInteger const kDefaultFinalInactiveDays = 8;
 #define kDefaultColorDayName [UIColor colorWithRed:0.55f green:0.04f blue:0.04f alpha:1.00f]
 #define kDefaultColorBottomBorder [UIColor colorWithRed:0.22f green:0.57f blue:0.80f alpha:1.00f]
 
+#define kDefaultDayLabelFont @"HelveticaNeue"
+#define kDefaultDayNameLabelFont @"HelveticaNeue-Medium"
+
 
 static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     
@@ -129,6 +132,18 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
 - (void)setDayNameLabelFontSize:(CGFloat)dayNameLabelFontSize
 {
     _dayNameLabelFontSize = dayNameLabelFontSize;
+    [self.tableView reloadData];
+}
+
+- (void)setDayLabelFont:(NSString *)dayLabelFont
+{
+    _dayLabelFont = dayLabelFont;
+    [self.tableView reloadData];
+}
+
+- (void)setDayNameLabelFont:(NSString *)dayNameLabelFont
+{
+    _dayNameLabelFont = dayNameLabelFont;
     [self.tableView reloadData];
 }
 
@@ -254,6 +269,8 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         _dayLabelZoomScale = kDefaultDayLabelMaxZoomValue;
         _dayLabelFontSize = kDefaultDayLabelFontSize;
         _dayNameLabelFontSize = kDefaultDayNameLabelFontSize;
+        _dayLabelFont = kDefaultDayLabelFont;
+        _dayNameLabelFont = kDefaultDayLabelFont;
         
         [self setActiveDaysFrom:1 toDay:[NSDate dateFromDay:1 month:self.month year:self.year].numberOfDaysInMonth-1];
         
@@ -474,14 +491,14 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
             CGFloat zoomStep = cosf(M_PI_2*distance/self.dayCellSize.width);
             
             if (distance < self.dayCellSize.width && distance > -self.dayCellSize.width) {
-                
-                cell.dayLabel.font = [cell.dayLabel.font fontWithSize:self.dayLabelFontSize + self.dayLabelZoomScale * zoomStep];
+
+                cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize + self.dayLabelZoomScale * zoomStep];
                 cell.dayLabel.textColor = self.selectedDayColor;
                 cell.dayNameLabel.textColor = self.selectedDayNameColor;
                 [cell setBottomBorderSlideHeight:zoomStep];
                 
             } else {
-                cell.dayLabel.font = [cell.dayLabel.font fontWithSize:self.dayLabelFontSize];
+                cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
                 [cell setBottomBorderSlideHeight:0.0];
                 NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
                 if (NSRangeContainsRow(self.activeDays, indexPath.row - kDefaultInitialInactiveDays + 1)) {
@@ -593,8 +610,8 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     [cell setUserInteractionEnabled:NO];
     
     cell.dayLabel.textColor = self.activeDayNameColor;
-    cell.dayLabel.font = [cell.dayLabel.font fontWithSize:self.dayLabelFontSize];
-    cell.dayNameLabel.font = [cell.dayNameLabel.font fontWithSize:self.dayNameLabelFontSize]; //This was set to the same font, making it impossible to have seperate fonts for day and number
+    cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
+    cell.dayNameLabel.font = [UIFont fontWithName:self.dayNameLabelFont size:self.dayNameLabelFontSize]; //This was set to the same font, making it impossible to have seperate fonts for day and number
     cell.dayNameLabel.textColor = self.activeDayNameColor;
     [cell setBottomBorderColor:self.bottomBorderColor];
     
@@ -616,11 +633,11 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         cell.containerView.layer.shadowOpacity = 1.0;
         
         [cell setBottomBorderSlideHeight:1.0];
-        
-        cell.dayLabel.font = [cell.dayLabel.font fontWithSize:self.dayLabelFontSize+self.dayLabelZoomScale];
+
+        cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize+self.dayLabelZoomScale];
         
     } else {
-        cell.dayLabel.font = [cell.dayLabel.font fontWithSize:self.dayLabelFontSize];
+        cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
         
         cell.containerView.backgroundColor = [UIColor clearColor];
         [cell setBottomBorderSlideHeight:0];
