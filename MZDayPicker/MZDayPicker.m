@@ -609,12 +609,13 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
     // I Handled it by tap gesture recognizer
     [cell setUserInteractionEnabled:NO];
     
-    cell.dayLabel.textColor = self.activeDayNameColor;
+
     cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
+    cell.dayLabel.textColor = self.activeDayNameColor;
     cell.dayNameLabel.font = [UIFont fontWithName:self.dayNameLabelFont size:self.dayNameLabelFontSize]; //This was set to the same font, making it impossible to have seperate fonts for day and number
     cell.dayNameLabel.textColor = self.activeDayNameColor;
     [cell setBottomBorderColor:self.bottomBorderColor];
-    
+
     cell.dayLabel.text = [NSString stringWithFormat:@"%@",day.day];
     cell.dayNameLabel.text = [NSString stringWithFormat:@"%@",day.name];
     
@@ -642,11 +643,13 @@ static BOOL NSRangeContainsRow (NSRange range, NSInteger row) {
         cell.containerView.backgroundColor = [UIColor clearColor];
         [cell setBottomBorderSlideHeight:0];
     }
-    
-    if (NSRangeContainsRow(self.activeDays, indexPath.row - kDefaultInitialInactiveDays + 1)) {
+
+    if (indexPath.row == _currentIndex.row) {
+        cell.dayLabel.textColor = self.selectedDayColor;
+        cell.dayNameLabel.textColor = self.selectedDayNameColor;
+    } else if (NSRangeContainsRow(self.activeDays, indexPath.row - kDefaultInitialInactiveDays + 1)) {
         cell.dayLabel.textColor = self.activeDayColor;
         cell.dayNameLabel.textColor = self.activeDayNameColor;
-        
     } else {
         cell.dayLabel.textColor = self.inactiveDayColor;
         cell.dayNameLabel.textColor = self.inactiveDayColor;
