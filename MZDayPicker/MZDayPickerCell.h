@@ -25,15 +25,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MZDayPickerCell : UITableViewCell
+@interface MZDayPickerCell : UICollectionViewCell
 
 @property (nonatomic, readonly) UIView *containerView;
 @property (nonatomic, readonly) UILabel *dayLabel;
 @property (nonatomic, readonly) UILabel *dayNameLabel;
+@property (nonatomic, assign) CGFloat footerHeight;
 
 - (void)setBottomBorderSlideHeight:(CGFloat)height;
 - (void)setBottomBorderColor:(UIColor *)color;
 
-- (UITableViewCell *)initWithSize:(CGSize)size footerHeight:(CGFloat)footerHeight reuseIdentifier:(NSString *)reuseIdentifier;
+- (instancetype)initWithSize:(CGSize)size
+                footerHeight:(CGFloat)footerHeight;
 
 @end

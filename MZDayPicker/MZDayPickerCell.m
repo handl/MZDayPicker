@@ -26,9 +26,8 @@
 #import "MZDayPickerCell.h"
 
 @interface MZDayPickerCell ()
-@property (nonatomic,strong) UIView *bottomBorderView;
-@property (nonatomic,assign) CGSize cellSize;
-@property (nonatomic,assign) CGFloat footerHeight;
+@property (nonatomic, strong) UIView *bottomBorderView;
+@property (nonatomic, assign) CGSize cellSize;
 
 @property (nonatomic, strong) UIView *containerView;
 @property (nonatomic, strong) UILabel *dayLabel;
@@ -37,106 +36,71 @@
 
 @implementation MZDayPickerCell
 
-- (void)setBottomBorderSlideHeight:(CGFloat)height
-{
-    CGRect bottomBorderRect = self.bottomBorderView.frame;
-    bottomBorderRect.size.height = height*self.footerHeight;
-    self.bottomBorderView.frame = bottomBorderRect;
-    
+- (void)setBottomBorderSlideHeight:(CGFloat)height {
+	CGRect bottomBorderRect = self.bottomBorderView.frame;
+	bottomBorderRect.size.height = height * self.footerHeight;
+	self.bottomBorderView.frame = bottomBorderRect;
 }
 
-- (void)setBottomBorderColor:(UIColor *)color
-{
-    self.bottomBorderView.backgroundColor = color;
+- (void)setBottomBorderColor:(UIColor *)color {
+	self.bottomBorderView.backgroundColor = color;
 }
 
-- (void)drawRect:(CGRect)rect
-{
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    // Use the same color and width as the default cell separator for now
-    CGContextSetRGBStrokeColor(ctx, 0.5, 0.5, 0.5, 1.0);
-    CGContextSetLineWidth(ctx, 0.25);
-    
-    CGContextMoveToPoint(ctx, self.footerHeight, 0);
-    CGContextAddLineToPoint(ctx, self.footerHeight, self.bounds.size.height);
-    
-    CGContextMoveToPoint(ctx, self.footerHeight, 0);
-    CGContextAddLineToPoint(ctx, self.cellSize.height+self.footerHeight, 0);
-    
-    CGContextMoveToPoint(ctx, self.footerHeight, self.bounds.size.height);
-    CGContextAddLineToPoint(ctx, self.cellSize.height+self.footerHeight, self.bounds.size.height);
-    
-    CGContextSetLineWidth(ctx, 0.35);
-    
-    CGContextMoveToPoint(ctx, self.cellSize.height+self.footerHeight, 0);
-    CGContextAddLineToPoint(ctx, self.cellSize.height+self.footerHeight, self.bounds.size.height);
-    
-    
-    CGContextStrokePath(ctx);
-    
-    [super drawRect:rect];
-    
+- (void)setFooterHeight:(CGFloat)footerHeight {
+    _footerHeight = footerHeight;
+	CGRect bottomBorderRect = self.bottomBorderView.frame;
+	bottomBorderRect.size.height = footerHeight;
+    bottomBorderRect.origin.y = self.frame.size.height - footerHeight;
+	self.bottomBorderView.frame = bottomBorderRect;
 }
 
-- (UITableViewCell *)initWithSize:(CGSize)size footerHeight:(CGFloat)footerHeight reuseIdentifier:(NSString *)reuseIdentifier
-{
-    if (self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier]) {
+- (instancetype)initWithSize:(CGSize)size
+                footerHeight:(CGFloat)footerHeight {
+	if (self = [super initWithFrame:CGRectMake(0, 0, size.width, size.height)]) {
+		if (CGSizeEqualToSize(size, CGSizeZero)) {
+			[NSException raise:NSInvalidArgumentException format:@"MZDayPickerCell size can't be zero!"];
+        }
+		else {
+			self.cellSize = size;
+        }
         
-        if (CGSizeEqualToSize(size, CGSizeZero)) 
-            [NSException raise:NSInvalidArgumentException format:@"MZDayPickerCell size can't be zero!"];
-         else 
-            self.cellSize = size;
+		self.footerHeight = footerHeight;
         
-        self.footerHeight = footerHeight;
-
-        [self applyCellStyle];
-    }
+		[self applyCellStyle];
+	}
     
-    return self;
+	return self;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-
-    if (self = [self initWithSize:CGSizeZero footerHeight:0.0 reuseIdentifier:reuseIdentifier]) {
-        
-    }
-    return self;
+- (instancetype)initWithFrame:(CGRect)frame {
+	return [self initWithSize:frame.size
+	             footerHeight:8.f];
 }
 
-- (void)applyCellStyle
-{
-    UIView* containingView = [[UIView alloc] initWithFrame:CGRectMake(self.footerHeight, 0, self.cellSize.width, self.cellSize.height)];
+- (void)applyCellStyle {
+	UIView *containingView = [[UIView alloc] initWithFrame:CGRectMake(self.footerHeight, 0, self.cellSize.width, self.cellSize.height)];
     
-    self.dayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.cellSize.width, self.cellSize.height)];
-    self.dayLabel.center = CGPointMake(containingView.frame.size.width/2, self.cellSize.height/2.6);
-    self.dayLabel.textAlignment = NSTextAlignmentCenter;
-    self.dayLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:self.dayLabel.font.pointSize];
-    self.dayLabel.backgroundColor = [UIColor clearColor];
+	self.dayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.cellSize.width, self.cellSize.height)];
+	self.dayLabel.center = CGPointMake(containingView.frame.size.width / 2, self.cellSize.height / 2.6);
+	self.dayLabel.textAlignment = NSTextAlignmentCenter;
+	self.dayLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:self.dayLabel.font.pointSize];
+	self.dayLabel.backgroundColor = [UIColor clearColor];
     
-    self.dayNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.cellSize.width, self.cellSize.height)];
-    self.dayNameLabel.center = CGPointMake(containingView.frame.size.width/2, self.cellSize.height/1.3);
-    self.dayNameLabel.textAlignment = NSTextAlignmentCenter;
-    self.dayNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:self.dayNameLabel.font.pointSize];
-    self.dayNameLabel.backgroundColor = [UIColor clearColor];
+	self.dayNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.cellSize.width, self.cellSize.height)];
+	self.dayNameLabel.center = CGPointMake(containingView.frame.size.width / 2, self.cellSize.height / 1.3);
+	self.dayNameLabel.textAlignment = NSTextAlignmentCenter;
+	self.dayNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:self.dayNameLabel.font.pointSize];
+	self.dayNameLabel.backgroundColor = [UIColor clearColor];
     
-    [containingView addSubview: self.dayLabel];
-    [containingView addSubview: self.dayNameLabel];
+	[containingView addSubview:self.dayLabel];
+	[containingView addSubview:self.dayNameLabel];
     
-    self.containerView = containingView;
+	self.containerView = containingView;
     
-    UIView *bottomBorder = [[UIView alloc] initWithFrame:CGRectMake(0, self.cellSize.height, containingView.bounds.size.width, self.footerHeight)];
+	self.bottomBorderView = [[UIView alloc] initWithFrame:CGRectMake(0, self.cellSize.height - self.footerHeight, containingView.bounds.size.width, self.footerHeight)];
+	[containingView addSubview:self.bottomBorderView];
     
-    self.bottomBorderView = bottomBorder;
-    [containingView addSubview:bottomBorder];
-    
-    [containingView setTransform:CGAffineTransformMakeRotation(M_PI_2)];
-    [self addSubview:containingView];
-    
-    if (self.cellSize.width != self.cellSize.height) {
-        containingView.frame = CGRectMake(self.footerHeight, 0, self.cellSize.height, self.cellSize.width);
-    }
+	[self addSubview:containingView];
 }
-
 
 @end
