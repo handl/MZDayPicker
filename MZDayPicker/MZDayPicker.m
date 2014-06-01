@@ -26,6 +26,7 @@
 #import "MZDayPicker.h"
 #import "MZDayPickerCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NSDate+CupertinoYankee.h"
 
 CGFloat const kDefaultDayLabelFontSize = 25.0f;
 CGFloat const kDefaultDayNameLabelFontSize = 11.0f;
@@ -49,6 +50,7 @@ NSInteger const kDefaultFinalInactiveDays = 8;
 #define kDefaultColorDay [UIColor blackColor]
 #define kDefaultColorDayName [UIColor colorWithRed:0.55f green:0.04f blue:0.04f alpha:1.00f]
 #define kDefaultColorBottomBorder [UIColor colorWithRed:0.22f green:0.57f blue:0.80f alpha:1.00f]
+#define kDefaultColorBottomBorderToday [UIColor redColor]
 
 #define kDefaultDayLabelFont @"HelveticaNeue"
 #define kDefaultDayNameLabelFont @"HelveticaNeue-Medium"
@@ -223,6 +225,7 @@ UICollectionViewDataSource
 		_inactiveDayColor = kDefaultColorInactiveDay;
 		_backgroundPickerColor = kDefaultColorBackground;
 		_bottomBorderColor = kDefaultColorBottomBorder;
+        _bottomBorderColorToday = kDefaultColorBottomBorderToday;
 		_dayLabelZoomScale = kDefaultDayLabelMaxZoomValue;
 		_dayLabelFontSize = kDefaultDayLabelFontSize;
 		_dayNameLabelFontSize = kDefaultDayNameLabelFontSize;
@@ -411,6 +414,13 @@ UICollectionViewDataSource
     return (MZDayPickerCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:[self.tableDaysData indexOfObject:day]]];
 }
 
+- (CGFloat)bottomBorderHeightForIndexPath:(NSIndexPath *)indexPath {
+    MZDay *day = self.tableDaysData[indexPath.section];
+
+    BOOL sameDay = [[[NSDate date] beginningOfDay] isSameDayAsDate:day.date];
+    return sameDay ? 1.0f : 0.0f;
+}
+
 #pragma mark - UIScrollView delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -435,8 +445,8 @@ UICollectionViewDataSource
         }
         else {
             cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
-            [cell setBottomBorderSlideHeight:0.0];
             NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
+            [cell setBottomBorderSlideHeight:[self bottomBorderHeightForIndexPath:indexPath]];
             if (NSRangeContainsRow(self.activeDays, indexPath.section - kDefaultInitialInactiveDays + 1)) {
                 cell.dayLabel.textColor = self.activeDayColor;
                 cell.dayNameLabel.textColor = self.activeDayNameColor;
@@ -545,7 +555,12 @@ UICollectionViewDataSource
     
 	[self setShadowForCell:cell];
     
-	if (![indexPath compare: _currentIndex]) {
+    BOOL sameDay = [[[NSDate date] beginningOfDay] isSameDayAsDate:day.date];
+    if (sameDay) {
+        cell.bottomBorderColor = self.bottomBorderColorToday;
+    }
+    
+	if (![indexPath compare: _currentIndex] || sameDay) {
 		cell.containerView.backgroundColor = self.backgroundPickerColor;
 		cell.containerView.layer.shadowOpacity = 1.0;
         
@@ -557,7 +572,7 @@ UICollectionViewDataSource
 		cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
         
 		cell.containerView.backgroundColor = [UIColor clearColor];
-		[cell setBottomBorderSlideHeight:0];
+		[cell setBottomBorderSlideHeight:[self bottomBorderHeightForIndexPath:indexPath]];
 	}
     
 	if (![indexPath compare: _currentIndex]) {
@@ -656,6 +671,19 @@ UICollectionViewDataSource
 	                      forDate:self];
     
 	return days.length;
+}
+
+- (BOOL)isSameDayAsDate:(NSDate*)date
+{
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    
+    unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit;
+    NSDateComponents* comp1 = [calendar components:unitFlags fromDate:self];
+    NSDateComponents* comp2 = [calendar components:unitFlags fromDate:date];
+    
+    return [comp1 day] == [comp2 day] &&
+    [comp1 month] == [comp2 month] &&
+    [comp1 year]  == [comp2 year];
 }
 
 @end

@@ -67,6 +67,7 @@
  * Property for cell footer color (optional)
  */
 @property (nonatomic, strong) UIColor *bottomBorderColor;
+@property (nonatomic, strong) UIColor *bottomBorderColorToday;
 
 /* Day number and name font size (optional) */
 @property (nonatomic, assign) NSString *dayLabelFont;
@@ -143,5 +144,6 @@
 + (NSDate *)dateFromDay:(NSInteger)day month:(NSInteger)month year:(NSInteger)year;
 + (NSDate *)dateWithNoTime:(NSDate *)dateTime middleDay:(BOOL)middle;
 - (NSUInteger)numberOfDaysInMonth;
+- (BOOL)isSameDayAsDate:(NSDate*)date;
 @end
 
