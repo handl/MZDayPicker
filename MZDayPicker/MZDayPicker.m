@@ -32,10 +32,10 @@ CGFloat const kDefaultDayLabelFontSize = 25.0f;
 CGFloat const kDefaultDayNameLabelFontSize = 11.0f;
 
 CGFloat const kDefaultCellHeight = 64.0f;
-CGFloat const kDefaultCellWidth = 64.0f;
+CGFloat const kDefaultCellWidth = 45.7f;
 CGFloat const kDefaultCellFooterHeight = 8.0f;
 
-CGFloat const kDefaultDayLabelMaxZoomValue = 7.0f;
+CGFloat const kDefaultDayLabelMaxZoomValue = 10.0f;
 
 NSInteger const kDefaultInitialInactiveDays = 8;
 NSInteger const kDefaultFinalInactiveDays = 8;
@@ -47,10 +47,17 @@ NSInteger const kDefaultFinalInactiveDays = 8;
 #define kDefaultShadowCellOffset CGSizeMake(0.0, 0.0)
 #define kDefaultShadowCellRadius 5
 
-#define kDefaultColorDay [UIColor blackColor]
-#define kDefaultColorDayName [UIColor colorWithRed:0.55f green:0.04f blue:0.04f alpha:1.00f]
+#define kDefaultColorDay [UIColor grayColor]
+#define kDefaultColorDayCurrent [UIColor whiteColor]
+#define kDefaultColorDayName [UIColor grayColor]
 #define kDefaultColorBottomBorder [UIColor colorWithRed:0.22f green:0.57f blue:0.80f alpha:1.00f]
 #define kDefaultColorBottomBorderToday [UIColor redColor]
+
+
+#define kDefaultColorCurrentDayHighlight [UIColor colorWithRed:89.0f/255.0f green:199.0f/255.0f blue:241.0f/255.0f alpha:1.00f]
+#define kCurrentDayIndicatorViewTag 99
+
+
 
 #define kDefaultDayLabelFont @"HelveticaNeue"
 #define kDefaultDayNameLabelFont @"HelveticaNeue-Medium"
@@ -222,6 +229,7 @@ UICollectionViewDataSource
 	if (self = [super initWithFrame:frame]) {
 		_activeDayColor = kDefaultColorDay;
 		_activeDayNameColor = kDefaultColorDayName;
+        _currentDayNameColor = kDefaultColorDayCurrent;
 		_inactiveDayColor = kDefaultColorInactiveDay;
 		_backgroundPickerColor = kDefaultColorBackground;
 		_bottomBorderColor = kDefaultColorBottomBorder;
@@ -439,35 +447,37 @@ UICollectionViewDataSource
         
         if (distance < self.dayCellSize.width && distance > -self.dayCellSize.width) {
             cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize + self.dayLabelZoomScale * zoomStep];
-            cell.dayLabel.textColor = self.selectedDayColor;
-            cell.dayNameLabel.textColor = self.selectedDayNameColor;
+//            cell.dayLabel.textColor = self.selectedDayColor;
+//            cell.dayNameLabel.textColor = self.selectedDayNameColor;
             [cell setBottomBorderSlideHeight:zoomStep];
         }
         else {
             cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
             NSIndexPath *indexPath = [self.collectionView indexPathForCell:cell];
             [cell setBottomBorderSlideHeight:[self bottomBorderHeightForIndexPath:indexPath]];
-            if (NSRangeContainsRow(self.activeDays, indexPath.section - kDefaultInitialInactiveDays + 1)) {
-                cell.dayLabel.textColor = self.activeDayColor;
-                cell.dayNameLabel.textColor = self.activeDayNameColor;
-            }
-            else {
-                cell.dayLabel.textColor = self.inactiveDayColor;
-                cell.dayNameLabel.textColor = self.inactiveDayColor;
-            }
+//            if (NSRangeContainsRow(self.activeDays, indexPath.section - kDefaultInitialInactiveDays + 1)) {
+//                cell.dayLabel.textColor = self.activeDayColor;
+//                cell.dayNameLabel.textColor = self.activeDayNameColor;
+//            }
+//            else {
+//                cell.dayLabel.textColor = self.inactiveDayColor;
+//                cell.dayNameLabel.textColor = self.inactiveDayColor;
+//            }
         }
         
         // Shadow around cell
-        CGFloat shadowStep = cosf(M_PI_2 * distance / self.dayCellSize.width * 2);
+
         
-        if (distance < self.dayCellSize.width / 2 && distance > -self.dayCellSize.width / 2) {
-            cell.containerView.backgroundColor = self.backgroundPickerColor;
-            cell.containerView.layer.shadowOpacity = shadowStep;
-        }
-        else {
-            cell.containerView.backgroundColor = [UIColor clearColor];
-            cell.containerView.layer.shadowOpacity = 0;
-        }
+//        CGFloat shadowStep = cosf(M_PI_2 * distance / self.dayCellSize.width * 2);
+//        
+//        if (distance < self.dayCellSize.width / 2 && distance > -self.dayCellSize.width / 2) {
+//            cell.containerView.backgroundColor = self.backgroundPickerColor;
+//            cell.containerView.layer.shadowOpacity = shadowStep;
+//        }
+//        else {
+//            cell.containerView.backgroundColor = [UIColor clearColor];
+//            cell.containerView.layer.shadowOpacity = 0;
+//        }
 		
 	}
 }
@@ -553,42 +563,56 @@ UICollectionViewDataSource
 		cell.dayNameLabel.text = [self.dataSource dayPicker:self titleForCellDayNameLabelInDay:day];
 	}
     
-	[self setShadowForCell:cell];
+//	[self setShadowForCell:cell];
     
+    [[cell.containerView viewWithTag:kCurrentDayIndicatorViewTag] removeFromSuperview];
     BOOL sameDay = [[[NSDate date] beginningOfDay] isSameDayAsDate:day.date];
     if (sameDay) {
-        cell.bottomBorderColor = self.bottomBorderColorToday;
+        //cell.bottomBorderColor = self.bottomBorderColorToday;
+        [self setCurrentdayIndicatorForCell:cell];
+        cell.dayLabel.textColor = self.currentDayNameColor;
     }
     
 	if (![indexPath compare: _currentIndex] || sameDay) {
-		cell.containerView.backgroundColor = self.backgroundPickerColor;
-		cell.containerView.layer.shadowOpacity = 1.0;
+//		cell.containerView.backgroundColor = self.backgroundPickerColor;
+//		cell.containerView.layer.shadowOpacity = 1.0;
         
-		[cell setBottomBorderSlideHeight:1.0];
+//		[cell setBottomBorderSlideHeight:1.0];
         
 		cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize + self.dayLabelZoomScale];
 	}
 	else {
 		cell.dayLabel.font = [UIFont fontWithName:self.dayLabelFont size:self.dayLabelFontSize];
         
-		cell.containerView.backgroundColor = [UIColor clearColor];
-		[cell setBottomBorderSlideHeight:[self bottomBorderHeightForIndexPath:indexPath]];
+//		cell.containerView.backgroundColor = [UIColor clearColor];
+//		[cell setBottomBorderSlideHeight:[self bottomBorderHeightForIndexPath:indexPath]];
 	}
     
-	if (![indexPath compare: _currentIndex]) {
-		cell.dayLabel.textColor = self.selectedDayColor;
-		cell.dayNameLabel.textColor = self.selectedDayNameColor;
-	}
-	else if (NSRangeContainsRow(self.activeDays, indexPath.section - kDefaultInitialInactiveDays + 1)) {
-		cell.dayLabel.textColor = self.activeDayColor;
-		cell.dayNameLabel.textColor = self.activeDayNameColor;
-	}
-	else {
-		cell.dayLabel.textColor = self.inactiveDayColor;
-		cell.dayNameLabel.textColor = self.inactiveDayColor;
-	}
-    
+//	if (![indexPath compare: _currentIndex]) {
+//		cell.dayLabel.textColor = self.selectedDayColor;
+//		cell.dayNameLabel.textColor = self.selectedDayNameColor;
+//	}
+//	else if (NSRangeContainsRow(self.activeDays, indexPath.section - kDefaultInitialInactiveDays + 1)) {
+//		cell.dayLabel.textColor = self.activeDayColor;
+//		cell.dayNameLabel.textColor = self.activeDayNameColor;
+//	}
+//	else {
+//		cell.dayLabel.textColor = self.inactiveDayColor;
+//		cell.dayNameLabel.textColor = self.inactiveDayColor;
+//	}
+//    
 	return cell;
+}
+
+-(void) setCurrentdayIndicatorForCell:(MZDayPickerCell *)cell{
+    
+    UIView *blueDot = [[UIView alloc]  initWithFrame:CGRectMake(0.0f, 10.0f, 44.0f, 44.0f)];
+    blueDot.backgroundColor = kDefaultColorCurrentDayHighlight;
+    blueDot.layer.cornerRadius = 22.0f;
+    [blueDot.layer masksToBounds];
+    blueDot.tag = kCurrentDayIndicatorViewTag;
+    
+    [cell.containerView insertSubview:blueDot atIndex:0];
 }
 
 - (void)setShadowForCell:(MZDayPickerCell *)cell {
