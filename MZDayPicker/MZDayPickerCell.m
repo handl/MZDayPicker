@@ -94,6 +94,7 @@
 	self.dayNameLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:self.dayNameLabel.font.pointSize];
 	self.dayNameLabel.backgroundColor = [UIColor clearColor];
     
+    
 	[containingView addSubview:self.dayLabel];
 	[containingView addSubview:self.dayNameLabel];
     
@@ -103,6 +104,13 @@
 //	[containingView addSubview:self.bottomBorderView];
     
 	[self addSubview:containingView];
+}
+
+-(void) layoutSubviews{
+    [super layoutSubviews];
+    
+    self.dayNameLabel.text = [self.dayNameLabel.text uppercaseString];
+    
 }
 
 @end

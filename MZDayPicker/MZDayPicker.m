@@ -553,7 +553,7 @@ UICollectionViewDataSource
 	cell.bottomBorderColor = self.bottomBorderColor;
     
 	cell.dayLabel.text = [NSString stringWithFormat:@"%@", day.day];
-	cell.dayNameLabel.text = [NSString stringWithFormat:@"%@", day.name.uppercaseString];
+	cell.dayNameLabel.text = [NSString stringWithFormat:@"%@", day.name];
     
 	if ([self.dataSource respondsToSelector:@selector(dayPicker:titleForCellDayLabelInDay:)]) {
 		cell.dayLabel.text = [self.dataSource dayPicker:self titleForCellDayLabelInDay:day];
