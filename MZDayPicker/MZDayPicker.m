@@ -31,7 +31,7 @@
 CGFloat const kDefaultDayLabelFontSize = 25.0f;
 CGFloat const kDefaultDayNameLabelFontSize = 11.0f;
 
-CGFloat const kDefaultCellHeight = 64.0f;
+CGFloat const kDefaultCellHeight = 100.0f;
 CGFloat const kDefaultCellWidth = 45.7f;
 CGFloat const kDefaultCellFooterHeight = 8.0f;
 
@@ -553,7 +553,7 @@ UICollectionViewDataSource
 	cell.bottomBorderColor = self.bottomBorderColor;
     
 	cell.dayLabel.text = [NSString stringWithFormat:@"%@", day.day];
-	cell.dayNameLabel.text = [NSString stringWithFormat:@"%@", day.name];
+	cell.dayNameLabel.text = [NSString stringWithFormat:@"%@", day.name.uppercaseString];
     
 	if ([self.dataSource respondsToSelector:@selector(dayPicker:titleForCellDayLabelInDay:)]) {
 		cell.dayLabel.text = [self.dataSource dayPicker:self titleForCellDayLabelInDay:day];
@@ -606,7 +606,7 @@ UICollectionViewDataSource
 
 -(void) setCurrentdayIndicatorForCell:(MZDayPickerCell *)cell{
     
-    UIView *blueDot = [[UIView alloc]  initWithFrame:CGRectMake(0.0f, 10.0f, 44.0f, 44.0f)];
+    UIView *blueDot = [[UIView alloc]  initWithFrame:CGRectMake(0.0f, 40.0f, 44.0f, 44.0f)];
     blueDot.backgroundColor = kDefaultColorCurrentDayHighlight;
     blueDot.layer.cornerRadius = 22.0f;
     [blueDot.layer masksToBounds];
