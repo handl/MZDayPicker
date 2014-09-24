@@ -31,7 +31,7 @@
 CGFloat const kDefaultDayLabelFontSize = 25.0f;
 CGFloat const kDefaultDayNameLabelFontSize = 11.0f;
 
-CGFloat const kDefaultCellHeight = 82.0f;
+CGFloat const kDefaultCellHeight = 84.0f;
 CGFloat const kDefaultCellWidth = 45.7f;
 CGFloat const kDefaultCellFooterHeight = 8.0f;
 
