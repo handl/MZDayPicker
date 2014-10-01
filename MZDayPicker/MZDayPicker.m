@@ -209,9 +209,6 @@ UICollectionViewDataSource
     [self.collectionView scrollToItemAtIndexPath:currentIndex
                                 atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally
                                         animated:YES];
-    
-	if ([self.delegate respondsToSelector:@selector(dayPicker:didSelectDay:)])
-		[self.delegate dayPicker:self didSelectDay:self.tableDaysData[currentIndex.section]];
 }
 
 - (void)reloadData {
@@ -513,6 +510,10 @@ UICollectionViewDataSource
     _currentDay = centerIndexPath.section - 1;
     _currentDate = [(MZDay *)self.tableDaysData[centerIndexPath.section] date];
     self.currentIndex = centerIndexPath;
+    
+    if ([self.delegate respondsToSelector:@selector(dayPicker:didSelectDay:)]){
+        [self.delegate dayPicker:self didSelectDay:self.tableDaysData[centerIndexPath.section]];
+    }
 }
 
 #pragma mark - UICollectionViewDataSource
