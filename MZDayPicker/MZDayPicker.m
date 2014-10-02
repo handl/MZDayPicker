@@ -635,6 +635,10 @@ UICollectionViewDataSource
         _currentDay = indexPath.section - 1;
         _currentDate = [(MZDay *)self.tableDaysData[indexPath.section] date];
         [self setCurrentIndex:indexPath];
+        
+        if ([self.delegate respondsToSelector:@selector(dayPicker:didSelectDay:)]){
+            [self.delegate dayPicker:self didSelectDay:self.tableDaysData[self.currentIndex.section]];
+        }
     }
     
     return YES;
