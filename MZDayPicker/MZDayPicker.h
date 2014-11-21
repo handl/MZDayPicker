@@ -55,6 +55,7 @@
 @property (nonatomic, strong) UIColor *activeDayColor;
 @property (nonatomic, strong) UIColor *activeDayNameColor;
 @property (nonatomic, strong) UIColor *currentDayNameColor;
+@property (nonatomic, strong) UIColor *currentDayHighlightColor;
 @property (nonatomic, strong) UIColor *inactiveDayColor;
 @property (nonatomic, strong) UIColor *selectedDayColor;
 @property (nonatomic, strong) UIColor *selectedDayNameColor;

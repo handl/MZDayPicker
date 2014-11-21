@@ -227,6 +227,7 @@ UICollectionViewDataSource
 		_activeDayColor = kDefaultColorDay;
 		_activeDayNameColor = kDefaultColorDayName;
         _currentDayNameColor = kDefaultColorDayCurrent;
+        _currentDayHighlightColor = kDefaultColorCurrentDayHighlight;
 		_inactiveDayColor = kDefaultColorInactiveDay;
 		_backgroundPickerColor = kDefaultColorBackground;
 		_bottomBorderColor = kDefaultColorBottomBorder;
@@ -608,7 +609,7 @@ UICollectionViewDataSource
 -(void) setCurrentdayIndicatorForCell:(MZDayPickerCell *)cell{
     
     UIView *blueDot = [[UIView alloc]  initWithFrame:CGRectMake(2.0f, 42.0f, 40.0f, 40.0f)];
-    blueDot.backgroundColor = kDefaultColorCurrentDayHighlight;
+    blueDot.backgroundColor = self.currentDayHighlightColor;
     blueDot.layer.cornerRadius = 20.0f;
     [blueDot.layer masksToBounds];
     blueDot.tag = kCurrentDayIndicatorViewTag;
