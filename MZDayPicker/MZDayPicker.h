@@ -72,6 +72,7 @@
 @property (nonatomic, strong) UIColor *bottomBorderColorToday;
 
 /* Day number and name font size (optional) */
+@property (nonatomic, assign) NSString *daySelectedFont;
 @property (nonatomic, assign) NSString *dayLabelFont;
 @property (nonatomic, assign) NSString *dayNameLabelFont;
 @property (nonatomic, assign) CGFloat dayLabelFontSize;
